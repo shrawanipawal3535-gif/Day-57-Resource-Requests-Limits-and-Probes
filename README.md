@@ -21,6 +21,10 @@ Your Pods are running, but Kubernetes has no idea how much CPU or memory they ne
 
 CPU is in millicores: 100m = 0.1 CPU. Memory is in mebibytes: 128Mi.
 
+<img width="1152" height="902" alt="Image" src="https://github.com/user-attachments/assets/9407aa31-f672-45a0-b544-d92e04c3ad66" />
+
+
+
 # Task 2: OOMKilled — Exceeding Memory Limits
 
 1. Write a Pod manifest using the polinux/stress image with a memory limit of 100Mi
@@ -31,21 +35,31 @@ CPU is throttled when over limit. Memory is killed — no mercy.
 
 Check kubectl describe pod for Reason: OOMKilled and Exit Code: 137 (128 + SIGKILL).
 
+<img width="1014" height="246" alt="Image" src="https://github.com/user-attachments/assets/968c2e3c-79c2-4081-b220-a81803a0ec57" />
+
+<img width="980" height="860" alt="Image" src="https://github.com/user-attachments/assets/bcaf8691-70ca-4145-8f6d-d586ddccf908" />
+
+
+
 # Task 3: Pending Pod — Requesting Too Much
 
 1. Write a Pod manifest requesting cpu: 100 and memory: 128Gi
 2. Apply and check — STATUS stays Pending forever
 3. Run kubectl describe pod and read the Events — the scheduler says exactly why: insufficient resources
 
-# Task 4: Readiness Probe
+<img width="994" height="964" alt="Image" src="https://github.com/user-attachments/assets/96ac7933-3d32-4533-9554-dff8dbe0b196" />
 
-A readiness probe controls traffic. Failure removes the Pod from Service endpoints but does NOT restart it.
 
-1. Write a Pod manifest with nginx and a readinessProbe using httpGet on path / port 80
-2. Expose it as a Service: kubectl expose pod <name> --port=80 --name=readiness-svc
-3. Check kubectl get endpoints readiness-svc — the Pod IP is listed
-4. Break the probe: kubectl exec <pod> -- rm /usr/share/nginx/html/index.html
-5. Wait 15 seconds — Pod shows 0/1 READY, endpoints are empty, but the container is NOT restarted
+
+# Task 4: Liveness Probe
+
+A liveness probe detects stuck containers. If it fails, Kubernetes restarts the container.
+
+1. Write a Pod manifest with a busybox container that creates /tmp/healthy on startup, then deletes it after 30 seconds
+2. Add a liveness probe using exec that runs cat /tmp/healthy, with periodSeconds: 5 and failureThreshold: 3
+3. After the file is deleted, 3 consecutive failures trigger a restart. Watch with kubectl get pod -w
+
+
 
 # Task 5: Startup Probe
 
@@ -54,3 +68,9 @@ A startup probe gives slow-starting containers extra time. While it runs, livene
 1. Write a Pod manifest where the container takes 20 seconds to start (e.g., sleep 20 && touch /tmp/started)
 2. Add a startupProbe checking for /tmp/started with periodSeconds: 5 and failureThreshold: 12 (60 second budget)
 3. Add a livenessProbe that checks the same file — it only kicks in after startup succeeds
+
+
+
+<img width="1006" height="985" alt="Image" src="https://github.com/user-attachments/assets/9dab4e53-5eb3-40c8-a959-eacd72b622fb" />
+
+<img width="961" height="994" alt="Image" src="https://github.com/user-attachments/assets/e12e60ee-581a-46da-932c-634314f6b501" />
