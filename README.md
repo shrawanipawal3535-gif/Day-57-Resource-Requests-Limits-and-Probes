@@ -23,8 +23,6 @@ CPU is in millicores: 100m = 0.1 CPU. Memory is in mebibytes: 128Mi.
 
 <img width="1152" height="902" alt="Image" src="https://github.com/user-attachments/assets/9407aa31-f672-45a0-b544-d92e04c3ad66" />
 
-
-
 # Task 2: OOMKilled — Exceeding Memory Limits
 
 1. Write a Pod manifest using the polinux/stress image with a memory limit of 100Mi
@@ -39,8 +37,6 @@ Check kubectl describe pod for Reason: OOMKilled and Exit Code: 137 (128 + SIGKI
 
 <img width="980" height="860" alt="Image" src="https://github.com/user-attachments/assets/bcaf8691-70ca-4145-8f6d-d586ddccf908" />
 
-
-
 # Task 3: Pending Pod — Requesting Too Much
 
 1. Write a Pod manifest requesting cpu: 100 and memory: 128Gi
@@ -48,8 +44,6 @@ Check kubectl describe pod for Reason: OOMKilled and Exit Code: 137 (128 + SIGKI
 3. Run kubectl describe pod and read the Events — the scheduler says exactly why: insufficient resources
 
 <img width="994" height="964" alt="Image" src="https://github.com/user-attachments/assets/96ac7933-3d32-4533-9554-dff8dbe0b196" />
-
-
 
 # Task 4: Liveness Probe
 
@@ -59,7 +53,7 @@ A liveness probe detects stuck containers. If it fails, Kubernetes restarts the 
 2. Add a liveness probe using exec that runs cat /tmp/healthy, with periodSeconds: 5 and failureThreshold: 3
 3. After the file is deleted, 3 consecutive failures trigger a restart. Watch with kubectl get pod -w
 
-
+<img width="1032" height="973" alt="Image" src="https://github.com/user-attachments/assets/9fff7766-3bc5-461e-aee9-84b38c536692" />
 
 # Task 5: Startup Probe
 
@@ -68,8 +62,6 @@ A startup probe gives slow-starting containers extra time. While it runs, livene
 1. Write a Pod manifest where the container takes 20 seconds to start (e.g., sleep 20 && touch /tmp/started)
 2. Add a startupProbe checking for /tmp/started with periodSeconds: 5 and failureThreshold: 12 (60 second budget)
 3. Add a livenessProbe that checks the same file — it only kicks in after startup succeeds
-
-
 
 <img width="1006" height="985" alt="Image" src="https://github.com/user-attachments/assets/9dab4e53-5eb3-40c8-a959-eacd72b622fb" />
 
